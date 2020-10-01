@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css';
 import Routers from './routers';
 import { Container } from 'reactstrap'
-import { Route } from 'react-router-dom';
 function App() {
   return (
     <Container>
