@@ -1,47 +1,62 @@
 import React, { useState } from 'react'
-import { Button, Input, Label, Form, FormGroup } from 'reactstrap';
+import { Container, Button, Input, Label, Form, FormGroup, Alert } from 'reactstrap';
 import Api from '../../../services/api';
-export default function Login({history}) {
+export default function Login({ history }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
-
+    const [message, setMessage] = useState('')
     const handelSubmit = async evt => {
         evt.preventDefault();
+        setMessage('')
         console.log('email and password', email, password)
         await Api.post('/user/login', {
             email,
             password
         }).then(res => {
             localStorage.setItem("user", res.data.user)
-            console.log("DATA STORED", res.data.user);
-            history.push('/dashboard')
+            history.push('/')
         }).catch(err => {
             if (err.response) {
-                console.log('err.response--------------->', err.response)
-                // client received an error response (5xx, 4xx)
+                if (err.response.status === 401) {
+                    setMessage(err.response.data)
+                }
+                else if (err.response.status === 400) {
+                    let allErrors = '';
+                    const { errors } = err.response.data;
+                    errors.forEach(value => {
+                        allErrors += value.msg;
+                    });
+                    setMessage(allErrors)
+                }
             } else if (err.request) {
                 console.log('err.request--------------->', err.request)
-                // client never received a response, or request never left
             } else {
                 console.log('err', err)
             }
         });
-
     }
     return (
-        <Form inline onSubmit={handelSubmit}>
-            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                <Label htmlFor="userEmail" className="mr-sm-2" >Email</Label >
-                <Input type="email" name="email" id="userEmail" placeholder="test@test.com" onChange={evt => setEmail(evt.target.value)} />
-            </FormGroup>
-            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                <Label htmlFor="userPassword" className="mr-sm-2">Password</Label>
-                <Input name="password" type="password" id="userPassword" placeholder="Password" onChange={evt => setPassword(evt.target.value)}></Input>
-            </FormGroup>
-
-
-            <Button>Log in</Button>
-        </Form>
-
+        <Container>
+            <h1>Login:</h1>
+            <p>Please <strong>Login</strong> into your Account </p>
+            <Form onSubmit={handelSubmit}>
+                <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                    <Label htmlFor="userEmail" className="mr-sm-2" >Email</Label >
+                    <Input type="email" name="email" id="userEmail" placeholder="test@test.com" onChange={evt => setEmail(evt.target.value)} />
+                </FormGroup>
+                <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                    <Label htmlFor="userPassword" className="mr-sm-2">Password</Label>
+                    <Input name="password" type="password" id="userPassword" placeholder="Password" onChange={evt => setPassword(evt.target.value)}></Input>
+                </FormGroup>
+                {(message !== '') ? <Alert className='eventValidation validation' color='danger'> {message} </Alert> : ''}
+                
+                <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                    <Button className='submit-btn'>Log in</Button>
+                </FormGroup>
+                <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                    <Button className="secondary-btn" onClick={()=>history.push('/register')}>create Account</Button>
+                </FormGroup>
+            </Form>
+        </Container>
     )
 }

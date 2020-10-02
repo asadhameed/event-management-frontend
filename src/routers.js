@@ -3,15 +3,15 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Login from './pages/user/login';
 import Dashboard from './pages/dashboard';
 import Register from './pages/user/register';
-//<Route path='/' exact component={Login} />
-//<Route path='/' exact component={Register}></Route>
+import CreateEvent from './pages/event'
 export default function Router() {
     return (
         <BrowserRouter>
             <Switch>
-                <Route path='/' exact component={Register}></Route>
-                <Route path='/' exact component={Login} />
-                <Route path='/dashboard' exact component={Dashboard} />
+                <Route path='/' exact component={Dashboard} />
+                <Route path='/login' exact component={Login} />
+                <Route path='/register' exact component={Register}></Route>
+                <Route path='/event' exact component={CreateEvent} />
             </Switch>
         </BrowserRouter>
     )
