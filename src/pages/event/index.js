@@ -98,7 +98,7 @@ export default function CreateEvent({ history }) {
                         <DropdownMenu>
                             <DropdownItem onClick={() => setEventType('running')}>Running</DropdownItem>
                             <DropdownItem onClick={() => setEventType('walking')}>Walking</DropdownItem>
-                            <DropdownItem onClick={() => setEventType('summing')}>Summing</DropdownItem>
+                            <DropdownItem onClick={() => setEventType('swimming')}>swimming</DropdownItem>
                             <DropdownItem onClick={() => setEventType('cycling')}>Cycling</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>

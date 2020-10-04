@@ -6,33 +6,29 @@ import './dashboard.css'
 export default function DashBoard({ history }) {
     const [events, setEvents] = useState([]);
     const [selectType, setSelectedType] = useState(null);
-    const [url, setUrl] = useState('/events');
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
-    const [visible, setVisible]=useState(false)
     const id = localStorage.getItem('user');
 
 
     useEffect(() => {
-        setUrl('/events')
-        getEvents();
+        getEvents('/events');
     }, [])
 
 
-    const filterUserEvent = (query) => {
+    const filterUserEvent = async (query) => {
         setSelectedType(query)
-        setUrl('/event/byuser/')
-        getEvents()
+        const url = '/event/byuser/'
+        await getEvents(url)
     }
-    const filterEvents = (query) => {
+    const filterEvents = async (query) => {
         setSelectedType(query)
-        const url = selectType ? ('/events/' + selectType) : '/events';
-        setUrl(url)
-        getEvents()
+        const url = query ? ('/events/' + query) : '/events';
+        await getEvents(url)
 
     }
-    const getEvents = async () => {
-        console.log(url)
+    const getEvents = async (url) => {
+        //const url = filterURL ? filterURL : '/events/'
         await api.get(url, {
             headers: {
                 user_id: id
@@ -53,7 +49,7 @@ export default function DashBoard({ history }) {
     const deleteEvent = async (eventId) => {
         setSuccess(false)
         setError(false)
-        await api.delete('/event/' + eventId)
+        await api.delete('/event/' + eventId, { headers: { user_id: id } })
             .then(() => {
                 setSuccess(true)
                 getEvents()
@@ -86,7 +82,7 @@ export default function DashBoard({ history }) {
 
             </div>
             { success ? <UncontrolledAlert color='success' >The event delete Successfully</UncontrolledAlert> : ''}
-            {error ? <UncontrolledAlert color='danger' >The event couldn't delete</UncontrolledAlert> : '' } 
+            {error ? <UncontrolledAlert color='danger' >The event couldn't delete</UncontrolledAlert> : ''}
             <ul className='eventsList'>
                 {
                     events.map(event => (
