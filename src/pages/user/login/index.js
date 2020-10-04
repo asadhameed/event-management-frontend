@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Container, Button, Input, Label, Form, FormGroup, Alert } from 'reactstrap';
+import { Container, Button, Input, Label, Form, FormGroup, UncontrolledAlert } from 'reactstrap';
 import Api from '../../../services/api';
 export default function Login({ history }) {
     const [email, setEmail] = useState('');
@@ -40,6 +40,7 @@ export default function Login({ history }) {
             <h1>Login:</h1>
             <p>Please <strong>Login</strong> into your Account </p>
             <Form onSubmit={handelSubmit}>
+                {(message !== '') ? <UncontrolledAlert  color='danger'> {message} </UncontrolledAlert> : ''}
                 <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                     <Label htmlFor="userEmail" className="mr-sm-2" >Email</Label >
                     <Input type="email" name="email" id="userEmail" placeholder="test@test.com" onChange={evt => setEmail(evt.target.value)} />
@@ -48,13 +49,16 @@ export default function Login({ history }) {
                     <Label htmlFor="userPassword" className="mr-sm-2">Password</Label>
                     <Input name="password" type="password" id="userPassword" placeholder="Password" onChange={evt => setPassword(evt.target.value)}></Input>
                 </FormGroup>
-                {(message !== '') ? <Alert className='eventValidation validation' color='danger'> {message} </Alert> : ''}
-                
+                <FormGroup>
+
+
+                </FormGroup>
+
                 <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                     <Button className='submit-btn'>Log in</Button>
                 </FormGroup>
                 <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                    <Button className="secondary-btn" onClick={()=>history.push('/register')}>create Account</Button>
+                    <Button className="secondary-btn" onClick={() => history.push('/register')}>create Account</Button>
                 </FormGroup>
             </Form>
         </Container>

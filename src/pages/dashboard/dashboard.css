@@ -1,0 +1,41 @@
+ul.eventsList{
+    width: 100%;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    
+}
+ul.eventsList li{
+    display: flex;
+    flex-direction: column;
+}
+ul.eventsList li header{
+    margin-top: 10px;
+    width: 70%;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: 4px;
+}
+ul.eventsList li header div {
+    display: flex;
+    flex-direction:row-reverse
+}
+
+strong#eventTitle{
+    margin-top: 12px;
+    font-size: 24px;
+}
+
+.filterPanel{
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+@media (max-width:600px){
+    ul.eventsList{
+        grid-template-columns: 1fr;
+    }
+}

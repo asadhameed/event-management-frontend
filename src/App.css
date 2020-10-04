@@ -24,7 +24,7 @@ button{
 }
 
 .container {
-    margin: 80px auto;
+    margin: 50px auto;
     max-width: 450px;
     width: 100%;
     display: flex;
@@ -38,12 +38,12 @@ button{
 }
 
 .content{
-    width: 70%;
+    width: 90%;
     opacity: 0.8;
     background: #ffffff;
     margin-top: 10px;
-    border-radius: 50px;
-    padding: 40px;
+    border-radius: 30px;
+    padding: 10px;
 }
 
 .content h1 {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Button, Label, Input, Form, FormGroup } from 'reactstrap';
+import { Container, Button, Label, Input, Form, FormGroup,  UncontrolledAlert } from 'reactstrap';
 import api from '../../../services/api';
 
 export default function UserRegistration({ history }) {
@@ -8,10 +8,13 @@ export default function UserRegistration({ history }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('')
+    const [createAccount, setCreateAccount] = useState('')
     const submitHandel = async (evt) => {
         evt.preventDefault()
-        console.log('Name', firstName + ' ' + lastName);
-        console.log('Email', email)
+
+        setErrorMessage('');
+        setCreateAccount('')
         await api.post('/user/registration', {
             firstName,
             lastName,
@@ -21,9 +24,11 @@ export default function UserRegistration({ history }) {
         }).then(res => {
             localStorage.setItem('user', res.data.id)
             console.log(res)
-            history.push('/login')
+            setCreateAccount('Create Account please click on login')
+            // history.push('/login')
 
         }).catch(err => {
+            setErrorMessage('Information is missing')
             if (err.response) {
                 console.log('Err response', err.response)
 
@@ -41,6 +46,10 @@ export default function UserRegistration({ history }) {
             <h1>Registration</h1>
             <p>Please <strong>Register</strong> for a new Account</p>
             <Form onSubmit={submitHandel}>
+                <FormGroup>
+                    {(createAccount !== '') ? <UncontrolledAlert color="success">{createAccount} </UncontrolledAlert> : ''}
+                    {(errorMessage !== '') ? <UncontrolledAlert color='danger'>{errorMessage}</UncontrolledAlert> : ''}
+                </FormGroup>
                 <FormGroup className='mb-2 mr-sm-2 mb-sm-0'>
                     <Label htmlFor='firstName' className='mr-sm-2'>First Name</Label>
                     <Input type='text' name='firstName' id='firstName' placeholder="First Name" onChange={(evt) => setFirstName(evt.target.value)} />
@@ -65,7 +74,7 @@ export default function UserRegistration({ history }) {
                     <Button className="submit-btn">Create Account</Button>
                 </FormGroup>
                 <FormGroup>
-                    <Button className="secondary-btn" onClick={()=>history.push('/login')}>Log In</Button>
+                    <Button className="secondary-btn" onClick={() => history.push('/login')}>Log In</Button>
                 </FormGroup>
             </Form>
 
