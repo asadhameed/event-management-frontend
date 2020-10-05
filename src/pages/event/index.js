@@ -15,6 +15,7 @@ export default function CreateEvent({ history }) {
     const [createEvent, setCreateEvent] = useState('')
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const id = localStorage.getItem('user')
+    const token = localStorage.getItem('token')
 
     const toggle = () => setDropdownOpen(prevState => !prevState)
     const preview = useMemo(() => {
@@ -34,7 +35,7 @@ export default function CreateEvent({ history }) {
 
         await api.post('/event', formData, {
             headers: {
-                user_id: id
+                'x-auth-token': token
             }
         }).then(res => {
             setCreateEvent('The event Create successful. Go to Dash Board')
@@ -51,9 +52,6 @@ export default function CreateEvent({ history }) {
             if (err.response) {
                 console.log(err.response)
             }
-            // else if (err.request) {
-            //     console.log(err.request)
-            // }
             else {
                 console.log(err)
             }
@@ -110,7 +108,7 @@ export default function CreateEvent({ history }) {
                         <img src={pictureIcon} style={{ maxWidth: "50px" }} alt="upload icon " />
                     </Label>
                 </FormGroup>
-               
+
                 <FormGroup>
                     <Button className="submit-btn">Create Event</Button>
                 </FormGroup>

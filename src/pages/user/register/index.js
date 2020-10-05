@@ -23,9 +23,7 @@ export default function UserRegistration({ history }) {
             confirmPassword
         }).then(res => {
             localStorage.setItem('user', res.data.id)
-            console.log(res)
             setCreateAccount('Create Account please click on login')
-            // history.push('/login')
 
         }).catch(err => {
             setErrorMessage('Information is missing')

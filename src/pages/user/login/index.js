@@ -8,12 +8,13 @@ export default function Login({ history }) {
     const handelSubmit = async evt => {
         evt.preventDefault();
         setMessage('')
-        console.log('email and password', email, password)
+       
         await Api.post('/user/login', {
             email,
             password
         }).then(res => {
             localStorage.setItem("user", res.data.user)
+            localStorage.setItem('token', res.headers['x-auth-token'])
             history.push('/')
         }).catch(err => {
             if (err.response) {
@@ -40,7 +41,7 @@ export default function Login({ history }) {
             <h1>Login:</h1>
             <p>Please <strong>Login</strong> into your Account </p>
             <Form onSubmit={handelSubmit}>
-                {(message !== '') ? <UncontrolledAlert  color='danger'> {message} </UncontrolledAlert> : ''}
+                {(message !== '') ? <UncontrolledAlert color='danger'> {message} </UncontrolledAlert> : ''}
                 <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                     <Label htmlFor="userEmail" className="mr-sm-2" >Email</Label >
                     <Input type="email" name="email" id="userEmail" placeholder="test@test.com" onChange={evt => setEmail(evt.target.value)} />
@@ -50,8 +51,6 @@ export default function Login({ history }) {
                     <Input name="password" type="password" id="userPassword" placeholder="Password" onChange={evt => setPassword(evt.target.value)}></Input>
                 </FormGroup>
                 <FormGroup>
-
-
                 </FormGroup>
 
                 <FormGroup className="mb-2 mr-sm-2 mb-sm-0">

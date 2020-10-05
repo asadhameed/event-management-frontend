@@ -9,10 +9,11 @@ export default function DashBoard({ history }) {
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
     const id = localStorage.getItem('user');
+    const token = localStorage.getItem('token')
 
 
     useEffect(() => {
-        getEvents('/events');
+        getEvents();
     }, [])
 
 
@@ -27,11 +28,18 @@ export default function DashBoard({ history }) {
         await getEvents(url)
 
     }
-    const getEvents = async (url) => {
-        //const url = filterURL ? filterURL : '/events/'
+    const singOut = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user')
+        // localStorage.clear()
+        history.push('/')
+    }
+
+    const getEvents = async (filterURL) => {
+        const url = filterURL ? filterURL : '/events/'
         await api.get(url, {
             headers: {
-                user_id: id
+                'x-auth-token': token
             }
         })
             .then(response => {
@@ -49,7 +57,7 @@ export default function DashBoard({ history }) {
     const deleteEvent = async (eventId) => {
         setSuccess(false)
         setError(false)
-        await api.delete('/event/' + eventId, { headers: { user_id: id } })
+        await api.delete('/event/' + eventId, { headers: { 'x-auth-token': token } })
             .then(() => {
                 setSuccess(true)
                 getEvents()
@@ -64,8 +72,6 @@ export default function DashBoard({ history }) {
             })
 
     }
-
-    console.log(events)
     return (
         <>
             <div className='filterPanel'>
@@ -78,7 +84,16 @@ export default function DashBoard({ history }) {
                     <Button color='primary' onClick={() => filterEvents('walking')} active={selectType === 'walking'}>walking</Button>
 
                 </ButtonGroup>
-                <Button color='secondary' onClick={() => history.push('/event')}>Create A event</Button>
+                <ButtonGroup>
+                    <Button color='danger' hidden={!id} onClick={singOut} >Sign out</Button>
+                    <Button color='secondary' hidden={id} onClick={() => history.push('/login')}>Login</Button>
+                    <Button color='secondary' hidden={!id} size='sm' onClick={() => history.push('/event')}>Create A event</Button>
+
+                </ButtonGroup>
+
+
+
+
 
             </div>
             { success ? <UncontrolledAlert color='success' >The event delete Successfully</UncontrolledAlert> : ''}
