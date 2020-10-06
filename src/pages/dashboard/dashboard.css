@@ -23,6 +23,10 @@ ul.eventsList li header div {
     flex-direction:row-reverse
 }
 
+ul.eventList li button#eventRegister{
+ max-width: 20%;
+}
+
 strong#eventTitle{
     margin-top: 12px;
     font-size: 24px;

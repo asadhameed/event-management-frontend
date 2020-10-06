@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { UncontrolledAlert, Button, ButtonGroup } from 'reactstrap';
+import socketIO from 'socket.io-client';
 import api from '../../services/api';
 import moment from 'moment';
 import './dashboard.css'
@@ -7,14 +8,31 @@ export default function DashBoard({ history }) {
     const [events, setEvents] = useState([]);
     const [selectType, setSelectedType] = useState(null);
     const [error, setError] = useState(false);
-    const [success, setSuccess] = useState(false);
+    const [message, setMessage] = useState('')
+    const [notification, setNotification]=useState('')
     const id = localStorage.getItem('user');
     const token = localStorage.getItem('token')
 
+    const config = {
+        headers: { 'x-auth-token': token }
+    }
 
     useEffect(() => {
         getEvents();
-    })
+    }, [])
+
+    useEffect(() => {
+        const socket = socketIO('http://localhost:8000', {
+            query: {
+                token
+            }
+        });
+        socket.on('eventRegistration_request', response =>{
+           const notifi= `${response.user.firstName} ${response.user.lastName} want to register for your event ${response.event.title} `
+            setNotification(notifi)
+
+        } )
+    }, [])
 
 
     const filterUserEvent = async (query) => {
@@ -31,10 +49,26 @@ export default function DashBoard({ history }) {
     const singOut = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user')
-        // localStorage.clear()
         history.push('/')
     }
+    const registerHandler = async (event) => {
+        setMessage('');
+        if (!id && !token) {
+            setMessage('Please login for register to this Event');
+        }
 
+        await api.post('/eventRegister/' + event._id, {}, config)
+            .then(res => {
+                setMessage('You register for the event wait for approve');
+            }).catch(err => {
+                if (err.response) {
+                    console.log('Response error', err.response)
+                }
+                else {
+                    console.log('else err-------->', err)
+                }
+            })
+    }
     const getEvents = async (filterURL) => {
         const url = filterURL ? filterURL : '/events/'
         await api.get(url, {
@@ -55,12 +89,14 @@ export default function DashBoard({ history }) {
             })
     }
     const deleteEvent = async (eventId) => {
-        setSuccess(false)
+
+        setMessage('');
         setError(false)
-        await api.delete('/event/' + eventId, { headers: { 'x-auth-token': token } })
+        await api.delete('/event/' + eventId, config)
             .then(() => {
-                setSuccess(true)
-                getEvents()
+
+                setMessage();
+                getEvents('The event delete Successfully');
 
             }).catch(err => {
                 setError(true)
@@ -88,15 +124,11 @@ export default function DashBoard({ history }) {
                     <Button color='danger' hidden={!id} onClick={singOut} >Sign out</Button>
                     <Button color='secondary' hidden={id} onClick={() => history.push('/login')}>Login</Button>
                     <Button color='secondary' hidden={!id} size='sm' onClick={() => history.push('/event')}>Create A event</Button>
-
                 </ButtonGroup>
 
-
-
-
-
             </div>
-            { success ? <UncontrolledAlert color='success' >The event delete Successfully</UncontrolledAlert> : ''}
+            { (message !== '') ? <UncontrolledAlert color='success' >{message}</UncontrolledAlert> : ''}
+            { (notification !== '') ? <UncontrolledAlert color='info' >{notification}</UncontrolledAlert> : ''}
             {error ? <UncontrolledAlert color='danger' >The event couldn't delete</UncontrolledAlert> : ''}
             <ul className='eventsList'>
                 {
@@ -112,6 +144,8 @@ export default function DashBoard({ history }) {
                             <span><strong>Event Date: </strong>{moment(event.date).format('DD-mm-yyyy')}</span>
                             <span><strong>Event Price: </strong>{parseFloat(event.price).toFixed(2)} $</span>
                             <span><strong>Description: </strong>{event.description}</span>
+
+                            {(event.user !== id) ? <Button id='eventRegister' size='sm' onClick={() => registerHandler(event)}>Register</Button> : ''}
 
                         </li>
                     ))

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Button, Label, Input, Form, FormGroup,  UncontrolledAlert } from 'reactstrap';
+import { Container, Button, Label, Input, Form, FormGroup, UncontrolledAlert } from 'reactstrap';
 import api from '../../../services/api';
 
 export default function UserRegistration({ history }) {
