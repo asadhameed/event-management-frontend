@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState,useEffect, useMemo } from 'react';
 
 import { Container, Form, FormGroup, Input, Label, Button, Dropdown, DropdownItem, DropdownToggle, DropdownMenu, UncontrolledAlert } from 'reactstrap';
 import api from '../../services/api';
@@ -16,6 +16,10 @@ export default function CreateEvent({ history }) {
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const id = localStorage.getItem('user')
     const token = localStorage.getItem('token')
+    useEffect(()=>{
+        if(!id && !token)
+        history.push('/')
+    }, [id, token,history])
 
     const toggle = () => setDropdownOpen(prevState => !prevState)
     const preview = useMemo(() => {

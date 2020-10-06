@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { UncontrolledAlert, Button, ButtonGroup, Form } from 'reactstrap';
+import { UncontrolledAlert, Button, ButtonGroup } from 'reactstrap';
 import api from '../../services/api';
 import moment from 'moment';
 import './dashboard.css'
@@ -14,7 +14,7 @@ export default function DashBoard({ history }) {
 
     useEffect(() => {
         getEvents();
-    }, [])
+    })
 
 
     const filterUserEvent = async (query) => {
