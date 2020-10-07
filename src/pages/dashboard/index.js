@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { UncontrolledAlert, Button, ButtonGroup } from 'reactstrap';
 import socketIO from 'socket.io-client';
 import api from '../../services/api';
@@ -9,9 +9,16 @@ export default function DashBoard({ history }) {
     const [selectType, setSelectedType] = useState(null);
     const [error, setError] = useState(false);
     const [message, setMessage] = useState('')
-    const [notification, setNotification]=useState('')
+    
     const id = localStorage.getItem('user');
     const token = localStorage.getItem('token')
+    const socket = useMemo(() => {
+        if (token) {
+            return socketIO('http://localhost:8000', {
+                query: { token }
+            })
+        }
+    }, [token])
 
     const config = {
         headers: { 'x-auth-token': token }
@@ -19,20 +26,19 @@ export default function DashBoard({ history }) {
 
     useEffect(() => {
         getEvents();
-    }, [])
+    }, [events,selectType])
 
     useEffect(() => {
-        const socket = socketIO('http://localhost:8000', {
-            query: {
-                token
-            }
-        });
-        socket.on('eventRegistration_request', response =>{
-           const notifi= `${response.user.firstName} ${response.user.lastName} want to register for your event ${response.event.title} `
-            setNotification(notifi)
+        setMessage('');
+        if (token) {
+           
+            socket.on('eventRegistration_request', response => {
+                const notifi = `${response.user.firstName} ${response.user.lastName} want to register for your event ${response.event.title} `
+                setMessage(notifi)
+            })
+        }
 
-        } )
-    }, [])
+    }, [socket])
 
 
     const filterUserEvent = async (query) => {
@@ -95,10 +101,10 @@ export default function DashBoard({ history }) {
         await api.delete('/event/' + eventId, config)
             .then(() => {
 
-                setMessage();
-                getEvents('The event delete Successfully');
-
-            }).catch(err => {
+                setMessage('The event delete Successfully');
+                getEvents();
+            })
+            .catch(err => {
                 setError(true)
                 if (err.response) {
                     console.log(err.response)
@@ -128,7 +134,7 @@ export default function DashBoard({ history }) {
 
             </div>
             { (message !== '') ? <UncontrolledAlert color='success' >{message}</UncontrolledAlert> : ''}
-            { (notification !== '') ? <UncontrolledAlert color='info' >{notification}</UncontrolledAlert> : ''}
+            {/* { (notification !== '') ? <UncontrolledAlert color='info' >{notification}</UncontrolledAlert> : ''} */}
             {error ? <UncontrolledAlert color='danger' >The event couldn't delete</UncontrolledAlert> : ''}
             <ul className='eventsList'>
                 {
