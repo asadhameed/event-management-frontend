@@ -7,9 +7,11 @@ import './dashboard.css'
 export default function DashBoard({ history }) {
     const [events, setEvents] = useState([]);
     const [selectType, setSelectedType] = useState(null);
+    const [eventsRegisterRequest, setEventsRegisterRequest] = useState([])
     const [error, setError] = useState(false);
     const [message, setMessage] = useState('')
-    
+
+
     const id = localStorage.getItem('user');
     const token = localStorage.getItem('token')
     const socket = useMemo(() => {
@@ -26,19 +28,20 @@ export default function DashBoard({ history }) {
 
     useEffect(() => {
         getEvents();
-    }, [events,selectType])
+    }, [])
 
     useEffect(() => {
         setMessage('');
         if (token) {
-           
+
             socket.on('eventRegistration_request', response => {
-                const notifi = `${response.user.firstName} ${response.user.lastName} want to register for your event ${response.event.title} `
-                setMessage(notifi)
+                setEventsRegisterRequest([...eventsRegisterRequest, response]);
+                const notification = `${response.user.firstName} ${response.user.lastName} want to register for your event ${response.event.title} `
+                setMessage(notification)
             })
         }
 
-    }, [socket])
+    }, [socket, eventsRegisterRequest])
 
 
     const filterUserEvent = async (query) => {
@@ -115,7 +118,28 @@ export default function DashBoard({ history }) {
 
     }
     return (
+
         <>
+            {/* {console.log(eventsRegisterRequest)} */}
+            <ul className='eventRegisterRequest'>
+                {
+                    eventsRegisterRequest.map(register => (
+                        <li key={register._id}>
+                            <div className='eventRegisterRequestPanel'>
+                                <span>
+                                    <strong>{register.user.firstName} {register.user.lastName} </strong>
+                                 want to register for the event
+                                <strong>{register.event.title}</strong>
+                                </span>
+                                <ButtonGroup>
+                                    <Button color='success' >Approve</Button>
+                                    <Button color='danger'  >Reject</Button>
+                                </ButtonGroup>
+
+                            </div>  </li>
+                    ))
+                }
+            </ul>
             <div className='filterPanel'>
                 <ButtonGroup>
                     <Button color='primary' onClick={() => filterEvents(null)} active={selectType === null}>All</Button>
@@ -150,9 +174,7 @@ export default function DashBoard({ history }) {
                             <span><strong>Event Date: </strong>{moment(event.date).format('DD-mm-yyyy')}</span>
                             <span><strong>Event Price: </strong>{parseFloat(event.price).toFixed(2)} $</span>
                             <span><strong>Description: </strong>{event.description}</span>
-
                             {(event.user !== id) ? <Button id='eventRegister' size='sm' onClick={() => registerHandler(event)}>Register</Button> : ''}
-
                         </li>
                     ))
                 }

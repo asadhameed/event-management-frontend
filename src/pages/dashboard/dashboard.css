@@ -1,6 +1,10 @@
+ul.eventRegisterRequest li div.eventRegisterRequestPanel   {
+    display: flex;
+   justify-content: space-between;
+}
 ul.eventsList{
     width: 100%;
-    list-style: none;
+    list-style: none; 
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
