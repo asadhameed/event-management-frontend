@@ -6,14 +6,16 @@ import moment from 'moment';
 import './dashboard.css'
 export default function DashBoard({ history }) {
     const [events, setEvents] = useState([]);
+    const [url ,setURL] = useState('/events')
     const [selectType, setSelectedType] = useState(null);
     const [eventsRegisterRequest, setEventsRegisterRequest] = useState([])
     const [error, setError] = useState(false);
     const [message, setMessage] = useState('')
+    const [token, setToken]=useState(localStorage.getItem('token'))
 
-
+    const [config, setConfig] = useState( {    headers: { 'x-auth-token': token }})
     const id = localStorage.getItem('user');
-    const token = localStorage.getItem('token')
+    //const token = localStorage.getItem('token')
     const socket = useMemo(() => {
         if (token) {
             return socketIO('http://localhost:8000', {
@@ -22,14 +24,7 @@ export default function DashBoard({ history }) {
         }
     }, [token])
 
-    const config = {
-        headers: { 'x-auth-token': token }
-    }
-
-    useEffect(() => {
-        getEvents();
-    }, [])
-
+   
     useEffect(() => {
         setMessage('');
         if (token) {
@@ -41,25 +36,47 @@ export default function DashBoard({ history }) {
             })
         }
 
-    }, [socket, eventsRegisterRequest])
+    }, [socket, eventsRegisterRequest,token])
 
+    useEffect(() => {
 
+        async function getEvents  ()  {
+            await api.get(url, config)
+                .then(response => {
+                    setEvents(response.data)
+                })
+                .catch(err => {
+                    if (err.response) {
+                        console.log(err.response.data)
+                    }
+                    else {
+                        console.log(err)
+                    }
+                })
+        }
+        getEvents();
+    }, [url, events, config])
+
+   
     const filterUserEvent = async (query) => {
         setSelectedType(query)
         const url = '/event/byuser/'
-        await getEvents(url)
+         setURL(url)
     }
     const filterEvents = async (query) => {
         setSelectedType(query)
         const url = query ? ('/events/' + query) : '/events';
-        await getEvents(url)
+         setURL(url)
 
     }
     const singOut = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user')
+        setConfig('')
+        setToken('');
         history.push('/')
     }
+    
     const registerHandler = async (event) => {
         setMessage('');
         if (!id && !token) {
@@ -78,34 +95,15 @@ export default function DashBoard({ history }) {
                 }
             })
     }
-    const getEvents = async (filterURL) => {
-        const url = filterURL ? filterURL : '/events/'
-        await api.get(url, {
-            headers: {
-                'x-auth-token': token
-            }
-        })
-            .then(response => {
-                setEvents(response.data)
-            })
-            .catch(err => {
-                if (err.response) {
-                    console.log(err.response.data)
-                }
-                else {
-                    console.log(err)
-                }
-            })
-    }
+    
     const deleteEvent = async (eventId) => {
 
         setMessage('');
         setError(false)
         await api.delete('/event/' + eventId, config)
             .then(() => {
-
                 setMessage('The event delete Successfully');
-                getEvents();
+                setURL(url)
             })
             .catch(err => {
                 setError(true)
