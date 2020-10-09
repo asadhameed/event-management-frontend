@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { UncontrolledAlert, Button, ButtonGroup } from 'reactstrap';
+import Axios from 'axios';
 import socketIO from 'socket.io-client';
 import api from '../../services/api';
 import moment from 'moment';
@@ -15,7 +16,7 @@ export default function DashBoard({ history }) {
 
     const [config, setConfig] = useState( {    headers: { 'x-auth-token': token }})
     const id = localStorage.getItem('user');
-    //const token = localStorage.getItem('token')
+   
     const socket = useMemo(() => {
         if (token) {
             return socketIO('http://localhost:8000', {
@@ -39,13 +40,26 @@ export default function DashBoard({ history }) {
     }, [socket, eventsRegisterRequest,token])
 
     useEffect(() => {
-
+    /***********************************
+     * Can't perform a React state update on an unmounted component. 
+     * This is a no-op, but it indicates a memory leak in your application. 
+     * To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
+     */
+    //first method--->CancelToke
+    // second define own variable like isActive
+    // let isActive=true
+        const source = Axios.CancelToken.source();
+        config.cancelToken=source.token;
         async function getEvents  ()  {
             await api.get(url, config)
                 .then(response => {
-                    setEvents(response.data)
+                   // if(isActive){
+                         setEvents(response.data)
+                  //  }
+                   
                 })
                 .catch(err => {
+                   
                     if (err.response) {
                         console.log(err.response.data)
                     }
@@ -55,6 +69,11 @@ export default function DashBoard({ history }) {
                 })
         }
         getEvents();
+
+      return ()=>{
+          //isActive=false;
+          source.cancel()
+        }
     }, [url, events, config])
 
    
