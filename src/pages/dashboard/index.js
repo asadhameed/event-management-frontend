@@ -114,9 +114,25 @@ export default function DashBoard({ history }) {
                 }
             })
     }
-    
-    const deleteEvent = async (eventId) => {
 
+    const approvalEventRegister= async(status,eventRegister)=>{
+        //console.log(status, eventRegister)
+        await api.post('/eventRegister/'+status + eventRegister._id)
+        .then(res=>{
+            const filterEvents = eventsRegisterRequest.filter(item=> item !== eventRegister )
+            setEventsRegisterRequest(filterEvents)
+           
+
+        })
+        .catch(err=>console.log(err))
+    }
+    const approveHandler = async(eventRegister)=>{
+        await approvalEventRegister('approved/',eventRegister);
+    }
+    const rejectHandler = async(eventRegister)=>{
+        await approvalEventRegister('rejected/',eventRegister);
+    }
+    const deleteEvent = async (eventId) => {
         setMessage('');
         setError(false)
         await api.delete('/event/' + eventId, config)
@@ -149,8 +165,8 @@ export default function DashBoard({ history }) {
                                 <strong>{register.event.title}</strong>
                                 </span>
                                 <ButtonGroup>
-                                    <Button color='success' >Approve</Button>
-                                    <Button color='danger'  >Reject</Button>
+                                    <Button color='success' onClick={()=>approveHandler(register)} >Approve</Button>
+                                    <Button color='danger'  onClick={()=>rejectHandler(register)} >Reject</Button>
                                 </ButtonGroup>
 
                             </div>  </li>
