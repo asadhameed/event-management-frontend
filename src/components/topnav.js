@@ -29,9 +29,13 @@ const TopNav = () => {
                             <Link to='/' >Dash Board</Link>
                         </NavItem>
                         {isLogin ?
-                            <NavItem>
-                                <Link to='/event' >Create Event</Link>
-                            </NavItem>
+                            <div>
+                                <NavItem>
+                                    <Link to='/eventRegister'>My Event's Subscribe</Link>
+                                </NavItem> <NavItem>
+                                    <Link to='/event' > Create Event</Link>
+                                </NavItem>
+                            </div>
                             : ""}
                     </Nav>
                 </Collapse>
