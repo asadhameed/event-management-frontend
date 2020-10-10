@@ -1,8 +1,9 @@
-import React, { useState,useEffect, useMemo } from 'react';
+import React, { useState,useEffect, useMemo, useContext } from 'react';
 
 import { Container, Form, FormGroup, Input, Label, Button, Dropdown, DropdownItem, DropdownToggle, DropdownMenu, UncontrolledAlert } from 'reactstrap';
 import api from '../../services/api';
 import pictureIcon from '../../images/picture.png'
+import {UserContext} from '../../user-context';
 import './event.css';
 export default function CreateEvent({ history }) {
     const [title, setTitle] = useState('');
@@ -14,12 +15,11 @@ export default function CreateEvent({ history }) {
     const [errorMessage, setErrorMessage] = useState(false)
     const [createEvent, setCreateEvent] = useState('')
     const [dropdownOpen, setDropdownOpen] = useState(false)
-    const id = localStorage.getItem('user')
+    const {isLogin}= useContext(UserContext)
     const token = localStorage.getItem('token')
     useEffect(()=>{
-        if(!id && !token)
-        history.push('/')
-    }, [id, token,history])
+        if(!isLogin)  history.push('/')
+    }, [isLogin,history])
 
     const toggle = () => setDropdownOpen(prevState => !prevState)
     const preview = useMemo(() => {

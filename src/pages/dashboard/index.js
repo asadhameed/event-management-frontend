@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useContext } from 'react'
 import { UncontrolledAlert, Button, ButtonGroup, Dropdown, DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap';
 import Axios from 'axios';
 import socketIO from 'socket.io-client';
 import api from '../../services/api';
 import moment from 'moment';
+import {UserContext} from '../../user-context';
 import './dashboard.css'
 export default function DashBoard({ history }) {
     const [events, setEvents] = useState([]);
@@ -15,6 +16,7 @@ export default function DashBoard({ history }) {
     const [token] = useState(localStorage.getItem('token'));
     const [config] = useState({ headers: { 'x-auth-token': token } });
     const [dropDownOpen, setDropDownOpen] = useState(false);
+    const {isLogin} = useContext(UserContext);
     const id = localStorage.getItem('user');
 
     const toggle = () => setDropDownOpen(!dropDownOpen);
@@ -91,7 +93,7 @@ export default function DashBoard({ history }) {
     }
     const registerHandler = async (event) => {
         setMessage('');
-        if (!id && !token) {
+        if (!isLogin) {
             setMessage('Please login for register to this Event');
         }
 
@@ -170,7 +172,7 @@ export default function DashBoard({ history }) {
                     <DropdownToggle color='primary' caret>Filter</DropdownToggle>
                     <DropdownMenu>
                         <DropdownItem color='primary' onClick={() => filterEvents(null)} active={selectType === null}>All</DropdownItem>
-                        <DropdownItem color='primary' hidden={!id} onClick={() => filterUserEvent('userEvent')} active={selectType === 'userEvent'} >My Events</DropdownItem>
+                        <DropdownItem color='primary' hidden={!isLogin} onClick={() => filterUserEvent('userEvent')} active={selectType === 'userEvent'} >My Events</DropdownItem>
                         <DropdownItem color='primary' onClick={() => filterEvents('running')} active={selectType === 'running'}>Running</DropdownItem>
                         <DropdownItem color='primary' onClick={() => filterEvents('swimming')} active={selectType === 'swimming'}>Swimming</DropdownItem>
                         <DropdownItem color='primary' onClick={() => filterEvents('cycling')} active={selectType === 'cycling'}>Cycling</DropdownItem>
