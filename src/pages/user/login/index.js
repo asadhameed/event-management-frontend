@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Container, Button, Input, Label, Form, FormGroup, UncontrolledAlert } from 'reactstrap';
 import Api from '../../../services/api';
+import {UserContext} from '../../../user-context';
 export default function Login({ history }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
     const [message, setMessage] = useState('')
+    const { SetLogin} = useContext(UserContext)
     const handelSubmit = async evt => {
         evt.preventDefault();
         setMessage('')
@@ -15,6 +17,7 @@ export default function Login({ history }) {
         }).then(res => {
             localStorage.setItem("user", res.data.user)
             localStorage.setItem('token', res.headers['x-auth-token'])
+            SetLogin(true)
             history.push('/')
         }).catch(err => {
             if (err.response) {
