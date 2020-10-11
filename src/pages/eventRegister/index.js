@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 import Axios from 'axios';
 import moment from 'moment'
+
 import api from '../../services/api';
 import { UserContext } from '../../user-context';
 import './eventRegister.css'
-
 
 export default function EventRegister({ history }) {
     const { isLogin } = useContext(UserContext);
@@ -53,28 +53,31 @@ export default function EventRegister({ history }) {
     return ((
         (eventsRegister.length) ?
             (
-                <ul className='eventsRegister'>
-                    {
-                        eventsRegister.map(eventReg => (
-                            <li key={eventReg._id}>
-                                <div> <strong id='eventTitle'>{eventReg.event.title}</strong></div>
-                                <span><strong> Event Date :</strong> {moment(eventReg.event.date).format('DD-MM-YYYY')}</span>
-                                <span><strong> Price: </strong>{parseFloat(eventReg.event.price).toFixed(2)} $</span>
-                                <span> <strong>User Name : </strong>{eventReg.user.firstName} {eventReg.user.lastName}</span>
-                                <span><strong> User Email: </strong>{eventReg.user.email}</span>
-                                <span> <strong>status : </strong>
-                                    <span className={eventReg.approved !== undefined ? isApproved(eventReg.approved) : 'Pending'}>{eventReg.approved !== undefined ? isApproved(eventReg.approved) : 'Pending'}</span>
-                                </span>
-                                <ButtonGroup>
-                                    <strong> Change the Status :-</strong>
-                                    <Button color='success' hidden={eventReg.approved} size='sm' onClick={() => approvedHandler(eventReg)}>Accept</Button>
-                                    <Button color='danger' hidden={!eventReg.approved && eventReg.approved !== undefined} size='sm' onClick={() => rejectedHandler(eventReg)}>Reject</Button>
-                                </ButtonGroup>
-                            </li>
-                        ))
-                    }
-                </ul>
+                <>
+                    <div className='pageHeadline'> <strong>Users waiting for approval</strong></div>
+                    <ul className='eventsRegister'>
+                        {
+                            eventsRegister.map(eventReg => (
+                                <li key={eventReg._id}>
+                                    <div> <strong id='eventTitle'>{eventReg.event.title}</strong></div>
+                                    <span><strong> Event Date :</strong> {moment(eventReg.event.date).format('DD-MM-YYYY')}</span>
+                                    <span><strong> Price: </strong>{parseFloat(eventReg.event.price).toFixed(2)} $</span>
+                                    <span> <strong>User Name : </strong>{eventReg.user.firstName} {eventReg.user.lastName}</span>
+                                    <span><strong> User Email: </strong>{eventReg.user.email}</span>
+                                    <span> <strong>status : </strong>
+                                        <span className={eventReg.approved !== undefined ? isApproved(eventReg.approved) : 'Pending'}>{eventReg.approved !== undefined ? isApproved(eventReg.approved) : 'Pending'}</span>
+                                    </span>
+                                    <ButtonGroup>
+                                        <strong> Change the Status :-</strong>
+                                        <Button color='success' hidden={eventReg.approved} size='sm' onClick={() => approvedHandler(eventReg)}>Accept</Button>
+                                        <Button color='danger' hidden={!eventReg.approved && eventReg.approved !== undefined} size='sm' onClick={() => rejectedHandler(eventReg)}>Reject</Button>
+                                    </ButtonGroup>
+                                </li>
+                            ))
+                        }
+                    </ul>
+                </>
             )
-            : <div className='notFound'><strong> You do not create the event. Please create a event</strong></div>
+            : <div className='notFound'><strong> If you created the event. Some one do not subscribe your event.</strong></div>
     ))
 }

@@ -4,6 +4,15 @@
     flex-direction: column;
 }
 
+.pageHeadline{
+    padding:20px;
+    margin: 0.5rem;
+    border-radius: 30px;
+    font-size: 24px;
+    background-color: skyblue;
+    text-align: center;
+}
+
 .eventsRegister li {
 
     padding: 30px;
@@ -21,7 +30,7 @@
 
 strong#eventTitle{
     margin-top: 12px;
-    font-size: 24px;
+    font-size: 22px;
 }
 .Pending{
  color: blue;
@@ -33,13 +42,4 @@ strong#eventTitle{
 
 .Rejected{
     color: red;
-}
-
-.notFound{
-   font-size: large;
-    padding: 30px;
-    margin: 2rem;
-    border-radius: 20px;
-    background-color:skyblue;
-
 }
