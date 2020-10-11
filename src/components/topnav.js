@@ -33,7 +33,7 @@ const TopNav = () => {
                                 <NavItem>
                                     <Link to='/eventRegister'>My Event's Subscribe</Link>
                                 </NavItem> <NavItem>
-                                    <Link to='/event' > Create Event</Link>
+                                    <Link to='/event'> Create Event</Link>
                                 </NavItem>
                             </div>
                             : ""}

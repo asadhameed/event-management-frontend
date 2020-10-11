@@ -4,7 +4,7 @@ import Axios from 'axios';
 import socketIO from 'socket.io-client';
 import api from '../../services/api';
 import moment from 'moment';
-import {UserContext} from '../../user-context';
+import { UserContext } from '../../user-context';
 import './dashboard.css'
 export default function DashBoard({ history }) {
     const [events, setEvents] = useState([]);
@@ -16,7 +16,7 @@ export default function DashBoard({ history }) {
     const [token] = useState(localStorage.getItem('token'));
     const [config] = useState({ headers: { 'x-auth-token': token } });
     const [dropDownOpen, setDropDownOpen] = useState(false);
-    const {isLogin} = useContext(UserContext);
+    const { isLogin } = useContext(UserContext);
     const id = localStorage.getItem('user');
 
     const toggle = () => setDropDownOpen(!dropDownOpen);
@@ -31,15 +31,18 @@ export default function DashBoard({ history }) {
 
     useEffect(() => {
         setMessage('');
-        if (token) {
+        let isActive = true
+        if (isActive) {
+            if (token) {
 
-            socket.on('eventRegistration_request', response => {
-                setEventsRegisterRequest([...eventsRegisterRequest, response]);
-                const notification = `${response.user.firstName} ${response.user.lastName} want to register for your event ${response.event.title} `;
-                setMessage(notification);
-            })
+                socket.on('eventRegistration_request', response => {
+                    setEventsRegisterRequest([...eventsRegisterRequest, response]);
+                    const notification = `${response.user.firstName} ${response.user.lastName} want to register for your event ${response.event.title} `;
+                    setMessage(notification);
+                })
+            }
         }
-
+        isActive = false;
     }, [socket, eventsRegisterRequest, token])
 
     useEffect(() => {
@@ -159,7 +162,7 @@ export default function DashBoard({ history }) {
                                 <strong>{register.event.title}</strong>
                                 </span>
                                 <ButtonGroup>
-                                    <Button color='success' onClick={() => approveHandler(register)} >Approve</Button>
+                                    <Button color='success' onClick={() => approveHandler(register)} >Accept</Button>
                                     <Button color='danger' onClick={() => rejectHandler(register)} >Reject</Button>
                                 </ButtonGroup>
                             </div>
