@@ -34,3 +34,12 @@ strong#eventTitle{
 .Rejected{
     color: red;
 }
+
+.notFound{
+   font-size: large;
+    padding: 30px;
+    margin: 2rem;
+    border-radius: 20px;
+    background-color:skyblue;
+
+}

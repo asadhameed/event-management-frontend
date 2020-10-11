@@ -6,6 +6,7 @@ import Register from './pages/user/register';
 import CreateEvent from './pages/event'
 import EventRegister from './pages/eventRegister';
 import Topnav from './components/topnav';
+import EventRegisterStatus from './pages/eventRegisterStatus';
 export default function Router() {
     return (
         <BrowserRouter>
@@ -16,6 +17,7 @@ export default function Router() {
                 <Route path='/register' exact component={Register} />
                 <Route path='/event' exact component={CreateEvent} />
                 <Route path='/eventRegister' exact component={EventRegister} />
+                <Route path='/eventRegisterStatus' exact component={EventRegisterStatus} />
             </Switch>
         </BrowserRouter>
     )

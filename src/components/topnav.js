@@ -31,8 +31,12 @@ const TopNav = () => {
                         {isLogin ?
                             <div>
                                 <NavItem>
-                                    <Link to='/eventRegister'>My Event's Subscribe</Link>
-                                </NavItem> <NavItem>
+                                    <Link to='/eventRegister'>My Events</Link>
+                                </NavItem>
+                                <NavItem>
+                                    <Link to='/eventRegisterStatus'>Subscribed Events</Link>
+                                </NavItem>
+                                <NavItem>
                                     <Link to='/event'> Create Event</Link>
                                 </NavItem>
                             </div>

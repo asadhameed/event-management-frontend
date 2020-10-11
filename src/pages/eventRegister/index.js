@@ -16,7 +16,7 @@ export default function EventRegister({ history }) {
 
     useEffect(() => {
         if (!isLogin) history.push('/');
-        const source =Axios.CancelToken.source();
+        const source = Axios.CancelToken.source();
         config.cancelToken = source.token;
         const getEventRegister = () => {
             api.get('/eventsRegister', config)
@@ -27,7 +27,7 @@ export default function EventRegister({ history }) {
         }
         getEventRegister();
 
-        return()=>{
+        return () => {
             source.cancel();
         }
     }, [isLogin, history, statusChange, config])
@@ -38,8 +38,6 @@ export default function EventRegister({ history }) {
         await api.post('/eventRegister/' + statusUrl + eventReg._id)
             .then(res => {
                 setStatusChange(true);
-                // console.log(res)
-                //  getEventRegister()
             })
             .catch(err => setStatusChange(true))
     }
@@ -52,27 +50,31 @@ export default function EventRegister({ history }) {
         approvalEventRegister('rejected/', eventReg);
     }
 
-    return (
-        <ul className='eventsRegister'>
-            {
-                eventsRegister.map(eventReg => (
-                    <li key={eventReg._id}>
-                        <div> <strong id='eventTitle'>{eventReg.event.title}</strong></div>
-                        <span><strong> Event Date :</strong> {moment(eventReg.event.date).format('DD-MM-YYYY')}</span>
-                        <span><strong> Price: </strong>{parseFloat(eventReg.event.price).toFixed(2)} $</span>
-                        <span> <strong>User Name : </strong>{eventReg.user.firstName} {eventReg.user.lastName}</span>
-                        <span><strong> User Email: </strong>{eventReg.user.email}</span>
-                        <span> <strong>status : </strong>
-                            <span className={eventReg.approved !== undefined ? isApproved(eventReg.approved) : 'Pending'}>{eventReg.approved !== undefined ? isApproved(eventReg.approved) : 'Pending'}</span>
-                        </span>
-                        <ButtonGroup>
-                            <strong> Change the Status :-</strong>
-                            <Button color='success' hidden={eventReg.approved} size='sm' onClick={() => approvedHandler(eventReg)}>Accept</Button>
-                            <Button color='danger' hidden={!eventReg.approved && eventReg.approved !== undefined} size='sm' onClick={() => rejectedHandler(eventReg)}>Reject</Button>
-                        </ButtonGroup>
-                    </li>
-                ))
-            }
-        </ul>
-    )
+    return ((
+        (eventsRegister.length) ?
+            (
+                <ul className='eventsRegister'>
+                    {
+                        eventsRegister.map(eventReg => (
+                            <li key={eventReg._id}>
+                                <div> <strong id='eventTitle'>{eventReg.event.title}</strong></div>
+                                <span><strong> Event Date :</strong> {moment(eventReg.event.date).format('DD-MM-YYYY')}</span>
+                                <span><strong> Price: </strong>{parseFloat(eventReg.event.price).toFixed(2)} $</span>
+                                <span> <strong>User Name : </strong>{eventReg.user.firstName} {eventReg.user.lastName}</span>
+                                <span><strong> User Email: </strong>{eventReg.user.email}</span>
+                                <span> <strong>status : </strong>
+                                    <span className={eventReg.approved !== undefined ? isApproved(eventReg.approved) : 'Pending'}>{eventReg.approved !== undefined ? isApproved(eventReg.approved) : 'Pending'}</span>
+                                </span>
+                                <ButtonGroup>
+                                    <strong> Change the Status :-</strong>
+                                    <Button color='success' hidden={eventReg.approved} size='sm' onClick={() => approvedHandler(eventReg)}>Accept</Button>
+                                    <Button color='danger' hidden={!eventReg.approved && eventReg.approved !== undefined} size='sm' onClick={() => rejectedHandler(eventReg)}>Reject</Button>
+                                </ButtonGroup>
+                            </li>
+                        ))
+                    }
+                </ul>
+            )
+            : <div className='notFound'><strong> You do not create the event. Please create a event</strong></div>
+    ))
 }
