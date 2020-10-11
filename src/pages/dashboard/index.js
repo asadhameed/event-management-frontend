@@ -80,7 +80,7 @@ export default function DashBoard({ history }) {
             //isActive=false;
             source.cancel();
         }
-    }, [url, events, config])
+    }, [url, config])
 
 
     const filterUserEvent = async (query) => {
