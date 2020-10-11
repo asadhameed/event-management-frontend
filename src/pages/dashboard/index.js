@@ -22,7 +22,7 @@ export default function DashBoard({ history }) {
     const toggle = () => setDropDownOpen(!dropDownOpen);
     const socket = useMemo(() => {
         if (token) {
-            return socketIO('http://localhost:8000', {
+            return socketIO('https://sport-event-api.herokuapp.com/', {
                 query: { token }
             })
         }
