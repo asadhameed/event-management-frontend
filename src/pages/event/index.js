@@ -29,15 +29,22 @@ export default function CreateEvent({ history }) {
         setErrorMessage(false);
         setCreateEvent('');
         evt.preventDefault();
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('price', price);
-        formData.append('thumbnail', thumbnail);
-        formData.append('eventType', eventType);
-        formData.append('date', date);
+        // const formData = new FormData();
+        // formData.append('title', title);
+        // formData.append('description', description);
+        // formData.append('price', price);
+        // formData.append('thumbnail', thumbnail);
+        // formData.append('eventType', eventType);
+        // formData.append('date', date);
+        const body ={
+            title,
+            description,
+            price,
+            eventType,
+            date
+        }
 
-        await api.post('/event', formData, {
+        await api.post('/event', body, {
             headers: {
                 'x-auth-token': token
             }
