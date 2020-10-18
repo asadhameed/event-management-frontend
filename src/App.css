@@ -93,3 +93,12 @@ button{
     background: #200847;
     opacity: 1;
 }
+
+.notFound{
+    font-size: large;
+     padding: 30px;
+     margin: 2rem;
+     border-radius: 20px;
+     background-color:skyblue;
+ 
+ }

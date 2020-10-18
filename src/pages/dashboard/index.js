@@ -16,6 +16,7 @@ export default function DashBoard({ history }) {
     const [token] = useState(localStorage.getItem('token'));
     const [config] = useState({ headers: { 'x-auth-token': token } });
     const [dropDownOpen, setDropDownOpen] = useState(false);
+    const [eventSubscribed, setEventSubscribed] = useState([]);
     const { isLogin } = useContext(UserContext);
     const id = localStorage.getItem('user');
 
@@ -82,7 +83,21 @@ export default function DashBoard({ history }) {
         }
     }, [url, config])
 
+    useEffect(() => {
+        const source = Axios.CancelToken.source();
+        config.cancelToken = source.token;
+        async function getEventSubscribed() {
+            await api.get('/eventsSubscribed', config)
+                .then(res => setEventSubscribed(res.data))
+                .catch(err => console.log(err))
+        }
+        if (isLogin) getEventSubscribed();
 
+        return () => {
+            source.cancel();
+        }
+
+    }, [url, config, isLogin, message])
     const filterUserEvent = async (query) => {
         setSelectedType(query);
         const url = '/event/byuser/';
@@ -146,8 +161,18 @@ export default function DashBoard({ history }) {
                 else
                     console.log(err);
             })
-
     }
+
+    const isEventSubscribed = (eventId) => {
+        // console.log(eventSubscribed)
+        const findEventSubscribed = eventSubscribed.find(eventSub => eventSub.event._id === eventId);
+        if (!findEventSubscribed)
+            return false;
+        if (findEventSubscribed.approved)
+            return 'Approved'
+        return (findEventSubscribed.approved === false) ? 'Rejected' : 'Pending'
+    }
+
     return (
 
         <>
@@ -194,12 +219,14 @@ export default function DashBoard({ history }) {
                                     {(event.user === id) ? <Button color='danger' onClick={() => deleteEvent(event._id)} size='sm'>X</Button> : ''}
                                 </div>
                             </header>
+
                             <strong id='eventTitle'>{event.title}</strong>
                             <span><strong>Type: </strong>{event.eventType}</span>
-                            <span><strong>Event Date: </strong>{moment(event.date).format('DD-mm-yyyy')}</span>
+                            <span><strong>Event Date: </strong>{moment(event.date).format('DD-MM-YYYY')}</span>
                             <span><strong>Event Price: </strong>{parseFloat(event.price).toFixed(2)} $</span>
                             <span><strong>Description: </strong>{event.description}</span>
-                            {(event.user !== id) ? <Button id='eventRegister' size='sm' onClick={() => registerHandler(event)}>Register</Button> : ''}
+                            { isEventSubscribed(event._id) ? <span><strong>Status: </strong>{isEventSubscribed(event._id)}</span> : ''}
+                            {(event.user !== id && !isEventSubscribed(event._id)) ? <Button id='eventRegister' size='sm' onClick={() => registerHandler(event)}>Register</Button> : ''}
                         </li>
                     ))
                 }
