@@ -11,17 +11,17 @@ function App() {
         <div className="github_link">
           <a
             rel="noopener noreferrer"
-            href="https://github.com/asadhameed/event-management-frontend"
-            target="_blank"
-          >
-            <h6>Front-End code</h6>
-          </a>
-          <a
-            rel="noopener noreferrer"
             href="https://github.com/asadhameed/event-management-backend"
             target="_blank"
           >
-            <h6 style={{ float: "right" }}> Back-End code</h6>
+            <h6>Back-End code</h6>
+          </a>
+          <a
+            rel="noopener noreferrer"
+            href="https://github.com/asadhameed/event-management-frontend"
+            target="_blank"
+          >
+            <h6 style={{ float: "right" }}>Front-End code</h6>
           </a>
         </div>
         <div className="content">
