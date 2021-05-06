@@ -25,9 +25,8 @@ Open src\pages\dashboard\index.js file in the project directory. Change the sock
 
 Open package.json file in the project directory.
 
-- Running app on local machine then change the following value <br>
+- Running app on heroku then skip the following set and jump to <strong> Available Scripts </strong><br>
   <space> "start":"react-scripts start"
-- Deploying app on heroku then did not change the start value .
 
 ## Available Scripts
 
